@@ -1,0 +1,402 @@
+/* ============ 漫途统一设计规范 ============
+ * 主色：墨绿 #244B3C   暖米白 #F5F1E8   暖金 #C49A55
+ * 辅色：白 #FFFFFF     深灰绿 #303B35
+ * 圆角：卡片 32rpx（16px）｜大图 40rpx｜小图 20rpx
+ * 边距：页面左右 32rpx（16px）｜区块间距 48rpx
+ * ========================================= */
+page {
+  --bg: #f5f1e8;
+  --card: #ffffff;
+  --sand: #efe9dd;
+  --ink: #303b35;
+  --muted: #6f7a73;
+  --faint: #9aa39c;
+  --line: rgba(36, 75, 60, 0.1);
+  --pine: #244b3c;
+  --pine-soft: #e7ede7;
+  --gold: #c49a55;
+  --gold-deep: #a8813f;
+  /* 兼容旧页面中的强调色变量，统一收敛为暖金 */
+  --persimmon: #c49a55;
+  --radius-card: 32rpx;
+  --radius-lg: 40rpx;
+  --radius-sm: 20rpx;
+  --serif: "Songti SC", "STSong", "SimSun", serif;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", "Microsoft YaHei", sans-serif;
+  font-size: 28rpx;
+  line-height: 1.5;
+}
+
+view,
+text,
+image,
+button,
+input,
+textarea,
+scroll-view,
+swiper,
+swiper-item {
+  box-sizing: border-box;
+}
+
+/* 图片占位：本地图未加载完成或加载失败时露出浅色底，避免空洞（WXSS 不支持本地图片，故只用底色） */
+image {
+  background-color: #ede7da;
+}
+
+button {
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  line-height: inherit;
+  font-size: inherit;
+  color: inherit;
+  text-align: inherit;
+  border-radius: 0;
+  overflow: visible;
+  min-height: 0;
+  min-width: 0;
+  font-weight: inherit;
+}
+
+button::after {
+  border: none;
+}
+
+.tap-hover {
+  opacity: 0.82;
+}
+
+.pad-page {
+  padding: 12rpx 32rpx 64rpx;
+}
+
+.status-mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 8;
+  background: var(--bg);
+}
+
+.page-kicker,
+.sec-kicker {
+  display: block;
+  font-size: 22rpx;
+  letter-spacing: 4rpx;
+  color: var(--persimmon);
+}
+
+.page-title-row,
+.sec-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+
+.page-title-row {
+  margin-top: 8rpx;
+}
+
+.page-title {
+  font-size: 56rpx;
+  font-weight: 600;
+  letter-spacing: 1rpx;
+  line-height: 1.15;
+}
+
+.page-count,
+.sec-more {
+  font-size: 24rpx;
+  color: var(--pine);
+  padding-bottom: 6rpx;
+}
+
+.page-count {
+  color: var(--muted);
+}
+
+.sec {
+  margin-top: 48rpx;
+}
+
+.sec-head {
+  margin-bottom: 8rpx;
+}
+
+.sec-title,
+.block-title {
+  display: block;
+  font-weight: 600;
+}
+
+.sec-title {
+  margin-top: 6rpx;
+  font-size: 36rpx;
+}
+
+.block-title {
+  margin: 48rpx 0 20rpx;
+  font-size: 34rpx;
+}
+
+.one-line {
+  display: block;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.two-line {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.g-row {
+  display: flex;
+  align-items: stretch;
+  padding: 26rpx 0;
+  border-bottom: 1rpx solid var(--line);
+}
+
+.g-cover {
+  width: 196rpx;
+  height: 148rpx;
+  border-radius: 20rpx;
+  flex: none;
+}
+
+.g-body {
+  flex: 1;
+  min-width: 0;
+  margin-left: 22rpx;
+  display: flex;
+  flex-direction: column;
+}
+
+.g-cat {
+  font-size: 22rpx;
+  color: var(--persimmon);
+}
+
+.g-title {
+  display: block;
+  margin-top: 8rpx;
+  font-size: 30rpx;
+  font-weight: 600;
+  line-height: 1.45;
+}
+
+.g-meta {
+  margin-top: auto;
+  padding-top: 12rpx;
+  font-size: 22rpx;
+  color: var(--muted);
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  height: 60rpx;
+  padding: 0 28rpx;
+  margin-right: 12rpx;
+  border-radius: 999rpx;
+  background: transparent;
+  color: var(--muted);
+  font-size: 26rpx;
+  flex: none;
+}
+
+.pill.on {
+  background: var(--pine);
+  color: #f5f1e8;
+}
+
+.tag {
+  display: inline-block;
+  margin: 0 12rpx 12rpx 0;
+  padding: 8rpx 18rpx;
+  border-radius: 999rpx;
+  background: var(--pine-soft);
+  color: var(--pine);
+  font-size: 22rpx;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.btn,
+.dock-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 88rpx;
+  padding: 0 40rpx;
+  border-radius: 999rpx;
+  background: var(--pine);
+  color: #f5f1e8;
+  font-size: 28rpx;
+  font-weight: 600;
+}
+
+.btn.ghost {
+  background: transparent;
+  color: var(--pine);
+  border: 1rpx solid rgba(36, 75, 60, 0.35);
+}
+
+.dock {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 15;
+  display: flex;
+  align-items: center;
+  padding: 16rpx 28rpx calc(16rpx + constant(safe-area-inset-bottom));
+  padding: 16rpx 28rpx calc(16rpx + env(safe-area-inset-bottom));
+  background: rgba(255, 255, 255, 0.96);
+  border-top: 1rpx solid var(--line);
+}
+
+.dock-btn {
+  flex: 1;
+}
+
+.dock-tool {
+  width: 96rpx;
+  margin-right: 8rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--muted);
+  font-size: 20rpx;
+  line-height: 1.2;
+}
+
+.dock-tool.on {
+  color: var(--persimmon);
+}
+
+.tool-glyph {
+  font-size: 34rpx;
+  line-height: 1;
+  margin-bottom: 8rpx;
+}
+
+/* 双类名提升优先级，避免被各页 .sheet / .pad-page 的 padding 简写覆盖 */
+.has-dock.has-dock {
+  padding-bottom: calc(260rpx + constant(safe-area-inset-bottom));
+  padding-bottom: calc(260rpx + env(safe-area-inset-bottom));
+}
+
+.empty {
+  min-height: 52vh;
+  padding: 80rpx 40rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.empty-mark {
+  width: 112rpx;
+  height: 112rpx;
+  border-radius: 50%;
+  background: var(--sand);
+  color: var(--pine);
+  font-family: "Songti SC", "STSong", "SimSun", serif;
+  font-size: 48rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.empty-title {
+  display: block;
+  margin-top: 28rpx;
+  font-size: 34rpx;
+  font-weight: 600;
+}
+
+.empty-desc {
+  display: block;
+  margin-top: 12rpx;
+  font-size: 26rpx;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.empty .btn {
+  margin-top: 36rpx;
+}
+
+.s-ico {
+  position: relative;
+  width: 34rpx;
+  height: 34rpx;
+  color: var(--ink);
+  flex: none;
+}
+
+.s-ring {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 24rpx;
+  height: 24rpx;
+  box-sizing: border-box;
+  border: 3rpx solid currentColor;
+  border-radius: 50%;
+}
+
+.s-bar {
+  position: absolute;
+  left: 21rpx;
+  top: 21rpx;
+  width: 13rpx;
+  height: 3rpx;
+  background: currentColor;
+  border-radius: 3rpx;
+  transform: rotate(45deg);
+  transform-origin: left center;
+}
+
+.arrow {
+  width: 14rpx;
+  height: 14rpx;
+  border-top: 3rpx solid #9aa39c;
+  border-right: 3rpx solid #9aa39c;
+  transform: rotate(45deg);
+  flex: none;
+}
+
+.filter-bar {
+  position: sticky;
+  z-index: 6;
+  background: var(--bg);
+  padding: 20rpx 0 12rpx;
+}
+
+.filter-scroll {
+  width: 100%;
+  white-space: nowrap;
+}
+
+.pills {
+  display: inline-flex;
+  padding-right: 8rpx;
+}
+
+.ph {
+  color: #9aa39c;
+}
