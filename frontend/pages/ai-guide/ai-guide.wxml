@@ -1,0 +1,148 @@
+<view class="page" wx:if="{{ready && found}}">
+  <!-- 顶部信息面板：点「收起」或上滑可折叠，把空间让给对话 -->
+  <view class="top-panel" bindtouchstart="onPanelTouchStart" bindtouchend="onPanelTouchEnd">
+    <view class="panel-mini" wx:if="{{!panelOpen}}" bindtap="onTogglePanel" hover-class="tap-hover">
+      <view class="mini-left">
+        <view class="ai-badge mini">AI</view>
+        <text class="mini-title two-line">{{title}}</text>
+      </view>
+      <view class="mini-btn" catchtap="onTogglePanel">展开<view class="chev down"></view></view>
+    </view>
+
+    <block wx:else>
+      <!-- 头部 -->
+      <view class="head">
+        <view class="ai-badge">AI</view>
+        <view class="head-body">
+          <text class="page-kicker">漫途 AI 讲解</text>
+          <text class="head-title two-line">{{title}}</text>
+          <text class="head-sub">{{sub}}</text>
+        </view>
+        <view class="panel-fold" catchtap="onTogglePanel" hover-class="tap-hover">收起<view class="chev up"></view></view>
+      </view>
+
+      <!-- 讲解风格选择 -->
+      <view class="style-bar">
+        <text class="style-label">讲解风格</text>
+        <view class="style-chips">
+          <view
+            class="style-chip {{styleIndex === index ? 'on' : ''}}"
+            wx:for="{{styles}}"
+            wx:key="*this"
+            data-index="{{index}}"
+            bindtap="onStyle"
+          >{{item}}</view>
+        </view>
+      </view>
+
+      <!-- 时长模式 -->
+      <view class="dur-bar">
+        <text class="dur-label">语音时长</text>
+        <view class="dur-chips">
+          <view class="dur-chip {{durationMode === 'quick' ? 'on' : ''}}" data-mode="quick" bindtap="onDuration">快速了解</view>
+          <view class="dur-chip {{durationMode === 'fun' ? 'on' : ''}}" data-mode="fun" bindtap="onDuration">趣味讲解</view>
+          <view class="dur-chip {{durationMode === 'deep' ? 'on' : ''}}" data-mode="deep" bindtap="onDuration">深度讲解</view>
+        </view>
+      </view>
+
+      <!-- 主题快捷提问（仅攻略/目的地模式显示） -->
+      <scroll-view class="topic-bar" scroll-x show-scrollbar="{{false}}" wx:if="{{topics.length}}">
+        <view class="pills">
+          <view
+            class="pill"
+            wx:for="{{topics}}"
+            wx:key="key"
+            data-key="{{item.key}}"
+            bindtap="onTopic"
+          >{{item.name}}</view>
+        </view>
+      </scroll-view>
+    </block>
+  </view>
+
+  <!-- 对话区 -->
+  <scroll-view class="chat {{audio.url || audio.loading ? 'chat-with-audio' : ''}}" scroll-y scroll-into-view="msg-{{messages.length - 1}}" scroll-with-animation>
+    <view class="msg {{item.role}}" wx:for="{{messages}}" wx:key="index" id="msg-{{index}}">
+      <view class="msg-avatar">{{item.role === 'user' ? '我' : 'AI'}}</view>
+      <view class="msg-body">
+        <text class="msg-content">{{item.content}}</text>
+        <view class="msg-actions" wx:if="{{item.role === 'assistant'}}">
+          <view class="voice-btn" data-index="{{index}}" catchtap="onPlayVoice" hover-class="tap-hover">
+            <text wx:if="{{!audio.loading || audio.url}}">语音播放</text>
+            <text wx:else>合成中…</text>
+          </view>
+          <view class="copy-btn" data-index="{{index}}" catchtap="onCopy" hover-class="tap-hover">复制</view>
+        </view>
+      </view>
+    </view>
+    <view class="msg assistant" wx:if="{{sending}}">
+      <view class="msg-avatar">AI</view>
+      <view class="msg-body"><view class="typing-dots"><i></i><i></i><i></i></view></view>
+    </view>
+  </scroll-view>
+
+  <!-- 资料来源说明（每个景点固定展示，可折叠） -->
+  <view class="source-card" wx:if="{{sources}}">
+    <view class="source-head" bindtap="onToggleSource">
+      <text class="source-title">资料说明与来源</text>
+      <text class="source-toggle">{{sourceOpen ? '收起' : '展开'}}</text>
+    </view>
+    <view class="source-body" wx:if="{{sourceOpen}}">
+      <text class="source-note">{{sources.note}}</text>
+      <text class="source-updated">整理时间：{{sources.updated}}</text>
+      <view class="source-links">
+        <text
+          class="source-link"
+          wx:for="{{sources.items}}"
+          wx:key="name"
+          data-url="{{item.url}}"
+          bindtap="onCopySource"
+        >{{item.name}} ↗</text>
+      </view>
+      <text class="source-legend">标注「{{legendTag}}」的内容来自民间流传，并非史实结论。</text>
+    </view>
+  </view>
+
+  <!-- 常见问题 -->
+  <view class="faqs" wx:if="{{faqs.length}}">
+    <view class="faq" wx:for="{{faqs}}" wx:key="*this" data-q="{{item}}" bindtap="onFaq" hover-class="tap-hover">
+      {{item}}
+    </view>
+  </view>
+
+  <!-- 输入区 -->
+  <view class="input-bar">
+    <input
+      class="input"
+      placeholder="问问关于这个景点的任何问题…"
+      value="{{input}}"
+      bindinput="onInput"
+      confirm-type="send"
+      bindconfirm="onSend"
+      disabled="{{sending}}"
+    />
+    <view class="send-btn {{sending ? 'disabled' : ''}}" bindtap="onSend">发送</view>
+  </view>
+
+  <!-- 语音播放器（底部悬浮） -->
+  <view class="audio-dock" wx:if="{{audio.url || audio.loading}}">
+    <view class="audio-info">
+      <text class="audio-title" wx:if="{{audio.loading}}">语音合成中…</text>
+      <text class="audio-title" wx:elif="{{audio.playing}}">正在播放</text>
+      <text class="audio-title" wx:else>已暂停</text>
+    </view>
+    <view class="audio-ctrls">
+      <view class="audio-btn" catchtap="onReplay" hover-class="tap-hover">重播</view>
+      <view class="audio-btn play" catchtap="onTogglePlay" hover-class="tap-hover">
+        {{audio.playing ? '暂停' : '播放'}}
+      </view>
+    </view>
+  </view>
+</view>
+
+<view class="empty" wx:if="{{ready && !found}}">
+  <view class="empty-mark">讲</view>
+  <text class="empty-title">暂时没有可讲的内容</text>
+  <text class="empty-desc">这一站的内容还在整理，换一篇攻略试试。</text>
+  <view class="btn" bindtap="onBackHome">回攻略页</view>
+</view>

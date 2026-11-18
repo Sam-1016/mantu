@@ -1,0 +1,183 @@
+<nav-bar title="AI 拍照识景" solid="{{true}}" theme="dark" />
+
+<view class="page" style="padding-top: {{navBarHeight}}px;">
+  <!-- 待识别 -->
+  <block wx:if="{{stage === 'idle'}}">
+    <view class="intro-card">
+      <view class="intro-badge">AI</view>
+      <text class="intro-title">拍一张，告诉我这是哪</text>
+      <text class="intro-sub">对准景点、建筑或自然景观，AI 会认出它并讲解</text>
+    </view>
+
+    <view class="actions">
+      <view class="action-btn camera" bindtap="onCamera" hover-class="tap-hover">
+        <view class="action-ico">拍</view>
+        <text class="action-name">拍照识别</text>
+        <text class="action-desc">调用相机拍摄</text>
+      </view>
+      <view class="action-btn video" bindtap="onRecord" hover-class="tap-hover">
+        <view class="action-ico">录</view>
+        <text class="action-name">录像识别</text>
+        <text class="action-desc">连拍多帧分析</text>
+      </view>
+      <view class="action-btn album" bindtap="onAlbum" hover-class="tap-hover">
+        <view class="action-ico">册</view>
+        <text class="action-name">相册上传</text>
+        <text class="action-desc">从相册选一张</text>
+      </view>
+    </view>
+
+    <view class="tip-box">
+      <text class="tip-title">小贴士</text>
+      <text class="tip-text">• 尽量拍清景点的标志性建筑或全景</text>
+      <text class="tip-text">• 录像识别会连拍 3 帧综合分析，更抗手抖</text>
+      <text class="tip-text">• 识别成功后可直接进入 AI 讲解</text>
+    </view>
+  </block>
+
+  <!-- 识别中 -->
+  <block wx:if="{{stage === 'loading'}}">
+    <view class="loading-card">
+      <image lazy-load class="preview" src="{{imageSrc}}" mode="aspectFill" />
+      <view class="loading-body">
+        <view class="spinner"></view>
+        <text class="loading-text">AI 正在识别中…</text>
+      </view>
+    </view>
+  </block>
+
+  <!-- 识别结果 -->
+  <block wx:if="{{stage === 'result'}}">
+    <view class="result-card">
+      <image lazy-load class="result-img" src="{{imageSrc}}" mode="aspectFill" />
+      <view class="result-body">
+        <view class="result-tag" wx:if="{{matched}}">已匹配景点库</view>
+        <view class="result-tag no" wx:else>未匹配到库内景点</view>
+        <text class="result-name">{{name}}</text>
+        <text class="result-intro" wx:if="{{intro}}">{{intro}}</text>
+      </view>
+    </view>
+
+    <view class="result-actions" wx:if="{{matched}}">
+      <view class="primary-btn" bindtap="goGuide" hover-class="tap-hover">
+        进入 AI 讲解
+      </view>
+      <view class="ghost-btn" bindtap="onRetry" hover-class="tap-hover">
+        重新拍摄
+      </view>
+    </view>
+    <view class="result-actions" wx:elif="{{name && !uncertain}}">
+      <view class="primary-btn" bindtap="onExploreAI" hover-class="tap-hover">
+        让 AI 介绍这里
+      </view>
+      <view class="ghost-btn" bindtap="onExploreAI" hover-class="tap-hover">
+        继续向 AI 提问
+      </view>
+    </view>
+    <view class="result-hint" wx:if="{{name && !uncertain}}">
+      <text bindtap="onRetry">重新拍摄</text>
+    </view>
+    <view class="result-actions" wx:else>
+      <view class="ghost-btn" bindtap="onRetry" hover-class="tap-hover">
+        重新拍摄
+      </view>
+    </view>
+  </block>
+
+  <!-- 评价聚合分析（识别成功后自动触发） -->
+  <view class="review-card" wx:if="{{stage === 'result' && matched}}">
+    <view class="review-head">
+      <text class="review-title">全网评价分析</text>
+      <text class="review-kicker">公开用户评价 · AI 聚合</text>
+    </view>
+
+    <view class="review-loading" wx:if="{{reviewLoading}}">
+      <view class="spinner small"></view>
+      <text class="review-loading-text">正在聚合各平台真实评价…</text>
+    </view>
+
+    <block wx:elif="{{review && review.enough}}">
+      <!-- 1. AI 综合评价 -->
+      <text class="review-label">综合评价</text>
+      <text class="review-summary">{{review.summary}}</text>
+
+      <view class="review-points" wx:if="{{review.pros.length}}">
+        <view class="point-row" wx:for="{{review.pros}}" wx:key="*this">
+          <text class="point-dot good">优</text>
+          <text class="point-text">{{item}}</text>
+        </view>
+      </view>
+      <view class="review-points" wx:if="{{review.cons.length}}">
+        <view class="point-row" wx:for="{{review.cons}}" wx:key="*this">
+          <text class="point-dot bad">劣</text>
+          <text class="point-text">{{item}}</text>
+        </view>
+      </view>
+
+      <!-- 2. 综合评分 -->
+      <view class="score-box" wx:if="{{review.score}}">
+        <view class="score-main">
+          <text class="score-num">{{review.score}}</text>
+          <text class="score-max">/ 10</text>
+        </view>
+        <text class="score-label">综合评分（各维度均值）</text>
+        <text class="score-src">数据来源：{{platformText}}，共 {{review.sample.quotes}} 条公开评价，覆盖 {{review.sample.dimensionCount}} 个维度</text>
+      </view>
+      <text class="quote-note" wx:else>这批评价原文未涉及可量化的维度，因此不输出评分。</text>
+
+      <!-- 3. 维度得分 -->
+      <block wx:if="{{review.dimensions.length}}">
+        <text class="review-label">分维度表现</text>
+        <view class="dim-block" wx:for="{{review.dimensions}}" wx:key="key">
+          <view class="dim">
+            <text class="dim-name">{{item.label}}</text>
+            <view class="dim-bar"><view class="dim-fill" style="width: {{item.score * 10}}%"></view></view>
+            <text class="dim-score">{{item.score}}</text>
+          </view>
+          <text class="dim-evi" wx:if="{{item.evidence}}">依据：{{item.evidence}}</text>
+        </view>
+      </block>
+
+      <!-- 4. 各平台典型评价 -->
+      <text class="review-label">典型真实评价</text>
+      <view class="quote" wx:for="{{review.quotes}}" wx:key="text">
+        <view class="quote-top">
+          <text class="quote-platform">{{item.platform}}</text>
+          <text class="quote-date" wx:if="{{item.date}}">{{item.date}}</text>
+          <text class="quote-link" wx:if="{{item.url}}" data-url="{{item.url}}" bindtap="onCopyUrl">复制原文链接</text>
+        </view>
+        <text class="quote-text">{{item.text}}</text>
+      </view>
+      <text class="quote-note">以上为公开平台用户原文摘录，仅作参考；链接可在浏览器打开核对。</text>
+
+      <!-- 5. 评论截图佐证 -->
+      <view class="shots-head">
+        <text class="review-label">评论截图佐证</text>
+        <text class="shots-add" bindtap="onAddShot">+ 上传截图</text>
+      </view>
+      <view class="shots" wx:if="{{shots.length}}">
+        <image lazy-load class="shot" wx:for="{{shots}}" wx:key="fileID" src="{{item.fileID}}" mode="aspectFill"
+          data-url="{{item.fileID}}" bindtap="onPreviewShot" lazy-load />
+      </view>
+      <text class="shots-tip" wx:else>暂无截图，可上传平台评论截图作为佐证素材。</text>
+    </block>
+
+    <block wx:else>
+      <text class="review-summary">{{review.summary || '暂未采集到足够的公开评价。'}}</text>
+      <text class="quote-note">为保证客观中立，评价不足时不输出评分。</text>
+    </block>
+  </view>
+
+  <!-- 录像识别采集层 -->
+  <view class="record-mask" wx:if="{{recording}}">
+    <camera class="record-cam" flash="off" binderror="onCamError"></camera>
+    <view class="record-panel">
+      <view class="record-dot"></view>
+      <view class="record-texts">
+        <text class="record-title">录像识别中</text>
+        <text class="record-hint">{{recordHint}}</text>
+      </view>
+      <view class="record-cancel" bindtap="onRecordCancel" hover-class="tap-hover">取消</view>
+    </view>
+  </view>
+</view>
