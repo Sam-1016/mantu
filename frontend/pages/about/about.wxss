@@ -1,0 +1,103 @@
+.brand {
+  padding: 24rpx 0 12rpx;
+}
+
+.mark {
+  width: 96rpx;
+  height: 96rpx;
+  border-radius: 28rpx;
+  background: var(--pine);
+  color: #f5f1e8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Songti SC", "STSong", "SimSun", serif;
+  font-size: 44rpx;
+}
+
+.name {
+  display: block;
+  margin-top: 24rpx;
+  font-size: 56rpx;
+  font-weight: 600;
+  letter-spacing: 6rpx;
+}
+
+.slogan {
+  display: block;
+  margin-top: 10rpx;
+  font-size: 26rpx;
+  color: var(--muted);
+}
+
+.para {
+  display: block;
+  margin-top: 28rpx;
+  font-size: 28rpx;
+  line-height: 1.85;
+  color: #303b35;
+}
+
+.rows {
+  margin-top: 36rpx;
+  background: var(--card);
+  border-radius: 24rpx;
+  overflow: hidden;
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  padding: 28rpx;
+  border-bottom: 1rpx solid var(--line);
+  font-size: 28rpx;
+}
+
+.row:last-child {
+  border-bottom: none;
+}
+
+.val {
+  color: var(--muted);
+}
+
+/* ===== AI 连接自检 ===== */
+.diag {
+  margin-top: 32rpx;
+  padding: 28rpx;
+  background: var(--card);
+  border-radius: 24rpx;
+}
+.diag-head { display: flex; align-items: baseline; justify-content: space-between; }
+.diag-title { font-size: 30rpx; font-weight: 600; }
+.diag-sub { font-size: 22rpx; color: var(--muted); }
+.diag-actions { display: flex; margin-top: 20rpx; }
+.diag-btn {
+  padding: 16rpx 32rpx;
+  border-radius: 999rpx;
+  border: 2rpx solid var(--line);
+  font-size: 26rpx;
+  color: #303b35;
+  margin-right: 16rpx;
+}
+.diag-btn.primary { background: var(--pine); border-color: var(--pine); color: #f5f1e8; }
+.diag-summary { margin-top: 20rpx; font-size: 26rpx; }
+.diag-summary .ok { color: var(--pine); }
+.diag-summary .bad { color: #a5533f; }
+.diag-list { margin-top: 8rpx; }
+.diag-item { display: flex; align-items: flex-start; padding: 18rpx 0; border-bottom: 1rpx solid var(--line); }
+.diag-item:last-child { border-bottom: none; }
+.dot { width: 14rpx; height: 14rpx; border-radius: 50%; margin: 10rpx 16rpx 0 0; flex: none; }
+.dot.ok { background: var(--pine); }
+.dot.bad { background: #a5533f; }
+.diag-body { flex: 1; }
+.diag-label { display: block; font-size: 26rpx; }
+.diag-msg { display: block; margin-top: 6rpx; font-size: 22rpx; line-height: 1.6; color: var(--muted); }
+.diag-type { display: block; margin-top: 4rpx; font-size: 22rpx; color: #a5533f; }
+.diag-config { margin-top: 16rpx; padding: 16rpx 20rpx; background: rgba(36, 75, 60,0.05); border-radius: 12rpx; }
+.diag-config-line { display: block; font-size: 22rpx; line-height: 1.7; color: #303b35; }
+.diag-models { margin-top: 16rpx; }
+.model-row { display: flex; align-items: center; padding: 14rpx 0; border-bottom: 1rpx solid var(--line); }
+.model-id { font-size: 22rpx; color: #303b35; flex: 1; }
+.model-id.used { color: var(--pine); font-weight: 600; }
+.model-tag { font-size: 20rpx; color: var(--pine); background: rgba(36, 75, 60,0.1); padding: 2rpx 10rpx; border-radius: 6rpx; }

@@ -1,0 +1,190 @@
+<view class="status-mask" style="height: {{topPad}}px;"></view>
+<view class="pad-page" style="padding-top: {{topPad}}px;">
+  <!-- 1. 品牌区 -->
+  <view class="brand">
+    <view class="brand-row">
+      <text class="brand-name">漫途</text>
+      <text class="brand-badge">AI 文旅</text>
+    </view>
+    <text class="brand-sub">{{monthLabel}} · 把好风景，写成能跟着走的路</text>
+  </view>
+
+  <!-- 2. 搜索区 + 个人中心 -->
+  <view class="search-row">
+    <view class="search" bindtap="goSearch" hover-class="tap-hover">
+      <view class="s-ico">
+        <view class="s-ring"></view>
+        <view class="s-bar"></view>
+      </view>
+      <text class="s-ph">搜索城市、景点或目的地</text>
+    </view>
+    <view class="me-btn" bindtap="goMine" hover-class="tap-hover">
+      <view class="me-mark">我</view>
+    </view>
+  </view>
+
+  <!-- 3. 精选路线轮播 -->
+  <view class="hero-wrap" wx:if="{{heroes.length}}">
+    <swiper class="hero" circular autoplay="{{heroAuto}}" interval="4800" duration="450" current="{{heroCurrent}}" bindchange="onHeroChange" bindtouchstart="onHeroTouchStart" bindtouchend="onHeroTouchEnd">
+      <swiper-item wx:for="{{heroes}}" wx:key="id">
+        <view class="hero-card" data-id="{{item.id}}" bindtap="onGuide" hover-class="tap-hover">
+          <image class="hero-img" src="{{item.cover}}" mode="aspectFill" />
+          <view class="hero-mask"></view>
+          <view class="hero-copy">
+            <text class="hero-kicker">{{item.city}} · {{item.category}}</text>
+            <text class="hero-title two-line">{{item.title}}</text>
+            <text class="hero-meta">{{item.days}} 天 · {{item.reads}} 阅读</text>
+          </view>
+          <view class="hero-pager">
+            <text class="hero-now">{{heroLabel}}</text>
+            <text class="hero-all">/ {{heroTotal}}</text>
+          </view>
+        </view>
+      </swiper-item>
+    </swiper>
+    <view class="hero-nav prev" catchtap="onHeroPrev">
+      <view class="hero-chev left"></view>
+    </view>
+    <view class="hero-nav next" catchtap="onHeroNext">
+      <view class="hero-chev right"></view>
+    </view>
+  </view>
+
+  <!-- 4. AI 智能旅行助手（首页核心区） -->
+  <view class="ai-hero" bindtap="goAiPlan" hover-class="tap-hover">
+    <view class="ai-head">
+      <view class="ai-mark"></view>
+      <text class="ai-kicker">智能旅行助手</text>
+      <text class="ai-ai">AI</text>
+    </view>
+    <text class="ai-title">告诉我想去哪、几天、什么偏好</text>
+    <text class="ai-title tight">帮你排一条能走的路</text>
+    <view class="ai-caps">
+      <text class="ai-cap">行程规划</text>
+      <text class="ai-cap">景点讲解</text>
+      <text class="ai-cap">旅行问答</text>
+    </view>
+    <view class="ai-foot">
+      <view class="ai-cta">开始定制行程</view>
+      <text class="ai-note">按天拆解 · 可写入行程</text>
+    </view>
+  </view>
+
+  <!-- 5. 快捷服务 -->
+  <view class="quick">
+    <view class="quick-item" wx:for="{{quick}}" wx:key="key" data-key="{{item.key}}" bindtap="onQuick" hover-class="tap-hover">
+      <view class="quick-ico">{{item.mark}}</view>
+      <text class="quick-name">{{item.name}}</text>
+    </view>
+  </view>
+
+  <!-- 6. 热门目的地 -->
+  <view class="sec">
+    <view class="sec-head">
+      <view>
+        <text class="sec-kicker">热门目的地</text>
+        <text class="sec-title">这个季节，值得出发</text>
+      </view>
+      <text class="sec-more" bindtap="goDests">全部</text>
+    </view>
+  </view>
+</view>
+
+<scroll-view class="dest-scroll" scroll-x show-scrollbar="{{false}}">
+  <view
+    class="dest-card"
+    wx:for="{{destinations}}"
+    wx:key="id"
+    style="margin-left: {{index === 0 ? '32rpx' : '0'}}; margin-right: {{index === destinations.length - 1 ? '32rpx' : '16rpx'}};"
+    data-id="{{item.id}}"
+    bindtap="onDest"
+    hover-class="tap-hover"
+  >
+    <image lazy-load src="{{item.cover}}" mode="aspectFill" />
+    <view class="dest-mask"></view>
+    <view class="dest-copy">
+      <text class="dest-area">{{item.area}} · {{item.group}}</text>
+      <text class="dest-name">{{item.name}}</text>
+      <text class="dest-sub">{{item.season}} · {{item.temp}}</text>
+    </view>
+  </view>
+</scroll-view>
+
+<view class="pad-page rest">
+  <!-- 7. 攻略目录 -->
+  <view class="sec">
+    <view class="sec-head">
+      <view>
+        <text class="sec-kicker">目录</text>
+        <text class="sec-title">可以跟着走</text>
+      </view>
+      <text class="sec-more" bindtap="goGuides">全部 {{guideTotal}} 篇</text>
+    </view>
+
+    <view class="chips">
+      <view
+        class="chip"
+        wx:for="{{entries}}"
+        wx:key="name"
+        data-type="{{item.type}}"
+        data-value="{{item.value}}"
+        bindtap="onEntry"
+        hover-class="tap-hover"
+      >{{item.name}}</view>
+    </view>
+
+    <view class="toc">
+      <view class="toc-item" wx:for="{{toc}}" wx:key="id" data-id="{{item.id}}" bindtap="onGuide" hover-class="tap-hover">
+        <text class="toc-no">0{{index + 1}}</text>
+        <view class="toc-body">
+          <text class="toc-title two-line">{{item.title}}</text>
+          <text class="toc-meta">{{item.city}} · {{item.days}} 天 · {{item.reads}} 阅读</text>
+        </view>
+        <image class="toc-img" src="{{item.cover}}" mode="aspectFill" lazy-load />
+      </view>
+    </view>
+  </view>
+
+  <!-- 8. 灵感拼图 -->
+  <view class="sec" wx:if="{{bentoMain.id}}">
+    <view class="sec-head">
+      <view>
+        <text class="sec-kicker">灵感</text>
+        <text class="sec-title">再走远一点</text>
+      </view>
+    </view>
+    <view class="bento">
+      <view class="bento-main" data-id="{{bentoMain.id}}" bindtap="onGuide" hover-class="tap-hover">
+        <image src="{{bentoMain.cover}}" mode="aspectFill" />
+        <view class="bento-mask"></view>
+        <view class="bento-copy">
+          <text class="bento-kicker">{{bentoMain.city}}</text>
+          <text class="bento-title two-line">{{bentoMain.title}}</text>
+        </view>
+      </view>
+      <view class="bento-side" wx:if="{{bentoSide.length}}">
+        <view class="bento-sub" wx:for="{{bentoSide}}" wx:key="id" data-id="{{item.id}}" bindtap="onGuide" hover-class="tap-hover">
+          <image src="{{item.cover}}" mode="aspectFill" />
+          <view class="bento-mask"></view>
+          <view class="bento-copy">
+            <text class="bento-kicker">{{item.city}}</text>
+            <text class="bento-title two-line">{{item.title}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="more-row" bindtap="goMyGuides" hover-class="tap-hover">
+    <view class="more-copy">
+      <text class="more-title">我的攻略</text>
+      <text class="more-desc">写下自己的路线 · 本地保存 · AI 补充推荐</text>
+    </view>
+    <view class="arrow"></view>
+  </view>
+
+  <view class="footer">
+    <text class="footer-logo">漫途</text>
+    <text class="footer-text">AI 智能文旅服务平台</text>
+  </view>
+</view>

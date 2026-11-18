@@ -1,0 +1,84 @@
+<nav-bar title="关于漫途" solid="{{true}}" theme="dark" />
+<view class="pad-page">
+  <view class="brand">
+    <view class="mark">径</view>
+    <text class="name">漫途</text>
+    <text class="slogan">把好风景，写成能跟着走的路</text>
+  </view>
+
+  <text class="para">漫途是一本可以翻的旅行笔记。每篇攻略都按天数写：哪一段该慢，哪一顿该问价，哪一个景点其实可以删掉。</text>
+  <text class="para">AI 能力全部经由微信云函数中转：拍照识景、景点讲解、语音播报与多平台评价分析，API Key 只保存在云函数环境变量中。</text>
+
+  <view class="rows">
+    <view class="row">
+      <text>版本</text>
+      <text class="val">1.3.0</text>
+    </view>
+    <view class="row">
+      <text>内容</text>
+      <text class="val">AI 识景 · 讲解 · 评价分析</text>
+    </view>
+    <view class="row">
+      <text>配图</text>
+      <text class="val">本地实拍素材</text>
+    </view>
+  </view>
+
+  <!-- AI 连接自检 -->
+  <view class="diag">
+    <view class="diag-head">
+      <text class="diag-title">AI 连接自检</text>
+      <text class="diag-sub">验证云函数、Key 与模型是否可用</text>
+    </view>
+
+    <view class="diag-actions">
+      <view class="diag-btn primary" bindtap="onSelfCheck">
+        <text>{{checking ? '检测中…' : (checked ? '重新检测' : '开始检测')}}</text>
+      </view>
+      <view class="diag-btn" bindtap="onLoadModels">
+        <text>{{modelsLoading ? '获取中…' : '可用模型'}}</text>
+      </view>
+      <view class="diag-btn" bindtap="onProbeCdn">
+        <text>{{probeLoading ? '探测中…' : '云图前缀'}}</text>
+      </view>
+    </view>
+
+    <view class="diag-config" wx:if="{{cdnPrefix}}">
+      <text class="diag-config-line">云存储前缀（已复制）：{{cdnPrefix}}</text>
+    </view>
+
+    <view class="diag-summary" wx:if="{{checked}}">
+      <text class="{{ok ? 'ok' : 'bad'}}">{{ok ? '全部检查通过' : '存在异常，见下方明细'}}</text>
+    </view>
+
+    <view class="diag-list" wx:if="{{checks.length}}">
+      <view class="diag-item" wx:for="{{checks}}" wx:key="name">
+        <view class="dot {{item.ok ? 'ok' : 'bad'}}"></view>
+        <view class="diag-body">
+          <text class="diag-label">{{item.label}}</text>
+          <text class="diag-msg">{{item.message}}</text>
+          <text class="diag-type" wx:if="{{item.type && !item.ok}}">错误类型：{{item.type}}</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="diag-config" wx:if="{{config}}">
+      <text class="diag-config-line">接口：{{config.baseUrl}}</text>
+      <text class="diag-config-line">文本：{{config.chatModel}}</text>
+      <text class="diag-config-line">视觉：{{config.visionModel}}</text>
+      <text class="diag-config-line">语音：{{config.ttsModel}}:{{config.ttsVoice}}</text>
+    </view>
+
+    <view class="diag-models" wx:if="{{modelsLoaded}}">
+      <text class="diag-label">可用模型（{{modelTotal}}）</text>
+      <text class="diag-type" wx:if="{{modelsError}}">{{modelsError}}</text>
+      <view class="model-row" wx:for="{{models}}" wx:key="id" data-id="{{item.id}}" bindtap="onCopyModel">
+        <text class="model-id {{item.used ? 'used' : ''}}">{{item.id}}</text>
+        <text class="model-tag" wx:if="{{item.used}}">已使用</text>
+      </view>
+      <text class="diag-msg">点击模型名可复制到剪贴板，便于填入环境变量。</text>
+    </view>
+
+    <text class="diag-msg">Key 仅在云函数环境变量中读取，检测结果只显示掩码，不会返回完整 Key。</text>
+  </view>
+</view>

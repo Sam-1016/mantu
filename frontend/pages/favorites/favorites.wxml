@@ -1,0 +1,36 @@
+<nav-bar title="我的收藏" solid="{{true}}" theme="dark" />
+<view class="pad-page" wx:if="{{list.length || communityList.length}}">
+  <block wx:if="{{list.length}}">
+    <text class="lead">先放在这里，哪天想走再打开。</text>
+    <view class="fav" wx:for="{{list}}" wx:key="id">
+      <view class="g-row main" data-id="{{item.id}}" bindtap="onGuide" hover-class="tap-hover">
+        <image lazy-load class="g-cover" src="{{item.cover}}" mode="aspectFill" />
+        <view class="g-body">
+          <text class="g-cat">{{item.category}} · {{item.city}}</text>
+          <text class="g-title two-line">{{item.title}}</text>
+          <text class="g-meta">{{item.days}}天 · {{item.budgetText}}</text>
+        </view>
+      </view>
+      <view class="heart" catchtap="onUnfav" data-id="{{item.id}}">♥</view>
+    </view>
+  </block>
+
+  <block wx:if="{{communityList.length}}">
+    <text class="lead">社区里收藏的攻略</text>
+    <view class="fav" wx:for="{{communityList}}" wx:key="id" data-id="{{item.id}}" bindtap="onCommunity" hover-class="tap-hover">
+      <view class="g-row main">
+        <view class="g-body">
+          <text class="g-cat">{{item.destination}} · 社区攻略</text>
+          <text class="g-title two-line">{{item.title}}</text>
+          <text class="g-meta">{{item.author}} · ♥ {{item.likeCount}}</text>
+        </view>
+      </view>
+    </view>
+  </block>
+</view>
+<view class="empty" wx:else>
+  <view class="empty-mark">藏</view>
+  <text class="empty-title">收藏还是空的</text>
+  <text class="empty-desc">看到想走的路，先放在这里。</text>
+  <view class="btn" bindtap="goGuides">去看攻略</view>
+</view>

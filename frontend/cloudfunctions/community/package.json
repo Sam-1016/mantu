@@ -1,0 +1,9 @@
+{
+  "name": "mantu-community",
+  "version": "1.0.0",
+  "description": "漫途社区云函数 - 公共攻略、点赞、收藏",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
+}

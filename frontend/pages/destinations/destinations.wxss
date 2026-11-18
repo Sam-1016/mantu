@@ -1,0 +1,92 @@
+.page-head {
+  padding-top: 18rpx;
+}
+
+.search-line {
+  margin-top: 28rpx;
+  height: 88rpx;
+  padding: 0 24rpx;
+  border-radius: 24rpx;
+  background: var(--card);
+  border: 1rpx solid var(--line);
+  display: flex;
+  align-items: center;
+}
+
+.s-ph {
+  margin-left: 12rpx;
+  color: var(--faint);
+  font-size: 26rpx;
+}
+
+.d-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  margin-top: 16rpx;
+}
+
+.d-card {
+  position: relative;
+  width: 332rpx;
+  height: 440rpx;
+  margin-bottom: 22rpx;
+  border-radius: 32rpx;
+  overflow: hidden;
+}
+
+.d-card image {
+  width: 100%;
+  height: 100%;
+}
+
+.d-mask {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 240rpx;
+  background: linear-gradient(180deg, rgba(20, 14, 10, 0), rgba(20, 14, 10, 0.78));
+}
+
+.d-hot {
+  position: absolute;
+  top: 18rpx;
+  right: 18rpx;
+  padding: 6rpx 16rpx;
+  border-radius: 999rpx;
+  background: var(--gold);
+  color: #2f2a21;
+  font-size: 20rpx;
+  font-weight: 600;
+  letter-spacing: 1rpx;
+}
+
+.d-copy {
+  position: absolute;
+  left: 22rpx;
+  right: 22rpx;
+  bottom: 22rpx;
+  color: #f5f1e8;
+}
+
+.d-name {
+  display: block;
+  font-size: 42rpx;
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.d-sub {
+  display: block;
+  margin-top: 8rpx;
+  font-size: 22rpx;
+  color: rgba(245, 241, 232, 0.85);
+}
+
+.d-guides {
+  display: block;
+  margin-top: 6rpx;
+  font-size: 20rpx;
+  color: rgba(245, 241, 232, 0.62);
+}
